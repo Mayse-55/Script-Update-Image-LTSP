@@ -1,4 +1,5 @@
 # 🧾 Informations
+[![LTSP](https://img.shields.io/badge/LTSP-Thin%20Clients-darkgreen?style=flat-square&logo=server&logoColor=white)](https://ltsp.org/)
 
 - 📦 **LTSP version** : `23.02-1+deb12u1`  
 - 🐧 **Distribution** : Debian 12
