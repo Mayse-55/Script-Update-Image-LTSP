@@ -35,8 +35,14 @@ chmod +x /etc/script/reloadimage
 ```bash
 #!/bin/bash
 
-# Chemin du fichier flag
-flag_file="/home/bpx/tags/ffexecuted.flag"
+# Chemin du dossier et du fichier flag
+tag_dir="/home/internet/tags"
+flag_file="$tag_dir/test.flag"
+
+# Vérifier si le dossier tags existe, sinon le créer
+if [ ! -d "$tag_dir" ]; then
+    sudo mkdir -p "$tag_dir"
+fi
 
 # Si le flag existe déjà → on quitte directement
 if [ -f "$flag_file" ]; then
