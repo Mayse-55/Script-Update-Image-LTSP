@@ -23,13 +23,13 @@
 
 > [!important]
 > ✅ **Ce script doit être exécuté automatiquement avant le démarrage de la session utilisateur.**   
-> 🧰​ Il est écrit en **Bash** et doit être lancé avec les droits nécessaires.
+> 🧰​ N'oubli**e**z pas de **modifier** `visudo` si c'est un compte utilisateur qui le lance.
 ```bash
 nano /etc/systemd/system/reloadimage.service
 # Vous pouvez changer le nom reloadimage par autre chose
 ```
 Copier ceci dedans : 
-```bash
+```ini
 [Unit]
 Description=Reload Image LTSP
 Before=display-manager.service
@@ -45,13 +45,13 @@ ExecStart=/etc/script/nodisplay.sh
 WantedBy=multi-user.target
 ```
 ```bash
-systemctl restart daemon-reload
+systemctl daemon-reload
 ```
 ```bash
 systemctl enable reloadimage
 systemctl status reloadimage
 ```
-Ce script se lancera a chaque démarrage aura aucun effet sur le serveur aura un effet sur les clients 
+Ce script se lancera **à** chaque démarrage **et** aura aucun effet sur le serveur **mais** aura un effet sur les clients 
 
 ---
 
