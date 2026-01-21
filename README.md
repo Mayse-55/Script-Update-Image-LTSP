@@ -61,6 +61,24 @@ nano /etc/script/nodisplay.sh
 ```
 Copier ceci dedans
 ```bash
+#!/bin/bash
+
+# Chemin du dossier et du fichier flag
+tag_dir="/home/internet/tags"
+flag_file="$tag_dir/1.flag"
+
+# Vérifier si le dossier tags existe, sinon le créer
+if [ ! -d "$tag_dir" ]; then
+    sudo mkdir -p "$tag_dir"
+fi
+
+# Si le flag existe déjà → on quitte directement
+if [ -f "$flag_file" ]; then
+    exit 0
+fi
+
+sleep 5
+
 sudo rm /home/internet/tags/*
 
 sudo touch "$flag_file"
