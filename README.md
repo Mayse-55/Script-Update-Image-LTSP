@@ -22,51 +22,48 @@
 ---
 
 > [!important]
-> ✅ **Ce script doit être exécuté automatiquement au démarrage de la session utilisateur.**   
+> ✅ **Ce script doit être exécuté automatiquement avant le démarrage de la session utilisateur.**   
 > 🧰​ Il est écrit en **Bash** et doit être lancé avec les droits nécessaires.
 ```bash
-chmod +x /etc/script/reloadimage
-# Remplacez /etc/script/autoscan par le chemin réel de votre script
+nano /etc/systemd/system/reloadimage.service
+# Vous pouvez changer le nom reloadimage par autre chose
 ```
+Copier ceci dedans : 
+```bash
+[Unit]
+Description=Reload Image LTSP
+Before=display-manager.service
+After=network.target
+ConditionKernelCommandLine=|root=/dev/nfs
+ConditionKernelCommandLine=|nfsroot
+
+[Service]
+Type=oneshot
+ExecStart=/etc/script/nodisplay.sh
+
+[Install]
+WantedBy=multi-user.target
+```
+```bash
+systemctl restart daemon-reload
+```
+```bash
+systemctl enable reloadimage
+systemctl status reloadimage
+```
+Ce script se lancera a chaque démarrage aura aucun effet sur le serveur aura un effet sur les clients 
 
 ---
 
 **🐧​ - Script Bash :**
 ```bash
-#!/bin/bash
+nano /etc/script/nodisplay.sh
+```
+Copier ceci dedans
+```bash
+sudo rm /home/internet/tags/*
 
-# Chemin du dossier et du fichier flag
-tag_dir="/home/internet/tags"
-flag_file="$tag_dir/test.flag"
-
-# Vérifier si le dossier tags existe, sinon le créer
-if [ ! -d "$tag_dir" ]; then
-    sudo mkdir -p "$tag_dir"
-fi
-
-# Si le flag existe déjà → on quitte directement
-if [ -f "$flag_file" ]; then
-    exit 0
-fi
-
-sleep 5
-
-# Si on est pas encore dans un vrai terminal, alors ouvrir xfce4-terminal
-if [ "$TERM" = "dumb" ] || [ -z "$TERM" ]; then
-    xfce4-terminal --hold --command="$0"
-    exit 0
-fi
-
-# === Ici, on est dans une vraie fenêtre de terminal ===
-
-
-echo "#######################################################"
-echo "######                                           ######"
-echo "####            Mise à jour en cours ...           ####"
-echo "######                                           ######"
-echo "#######################################################"
-
-touch "$flag_file"
+sudo touch "$flag_file"
 sync  # Force l'écriture sur le disque
 
 # Attendre 5 seconds
@@ -74,15 +71,12 @@ sleep 5
 
 clear
 
-echo "#######################################################"
-echo "######                                           ######"
-echo "####    Synchronisation au serveur en cours ...    ####"
-echo "######                                           ######"
-echo "#######################################################"
-echo ""
-
 # Synchronisation des fichiers
-rsync -av --progress --delete-after \
+sudo rsync -av --progress /etc/home/internet/Bureau/ /home/internet/Bureau/
+
+sleep 2
+
+sudo rsync -av --progress --delete-after \
     --exclude='*/tags/' \
     --exclude='*/Bureau/' \
     --exclude='*/Images/' \
@@ -92,20 +86,13 @@ rsync -av --progress --delete-after \
     --exclude='*/Musique/' \
     --exclude='*/.cache/' \
     --exclude='*/.thunderbird/' \
-    --exclude='*/.mozilla/' \
-    /etc/bpx /home/
+    /etc/home/internet /home/
 
-# Attendre 5 seconds
+sudo rm -f /home/internet/Bureau/ALCASAR*.desktop
+
 sleep 2
 
 clear
-
-echo "######################################################"
-echo "######                                          ######"
-echo "####            Mise à jour terminé !             ####"
-echo "######                                          ######"
-echo "######################################################"
-echo ""
 
 for i in {10..1}
 do
