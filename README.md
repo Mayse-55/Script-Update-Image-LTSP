@@ -106,8 +106,6 @@ sudo rsync -av --progress --delete-after \
     --exclude='*/.thunderbird/' \
     /etc/home/internet /home/
 
-sudo rm -f /home/internet/Bureau/ALCASAR*.desktop
-
 sleep 2
 
 clear
