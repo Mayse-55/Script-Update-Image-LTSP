@@ -118,3 +118,7 @@ done
 # Redémarrage pour permettre la fermeture de session
 systemctl reboot
 ```
+
+---
+
+**Documentation réalisée par Nathaël Polnecq**
